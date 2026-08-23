@@ -1,8 +1,9 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { MdTheaters } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, delay } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
 import { RxCross2 } from "react-icons/rx";
 const navVariants = {
     open: {
@@ -29,7 +30,6 @@ const itemVariants = {
 };
 
 const Navbar = () => {
-    const navigate = useNavigate();
     const [navOptions, setNavOptions] = useState(false);
     const navbarRef = useRef(null);
 
@@ -56,9 +56,13 @@ const Navbar = () => {
             ref={navbarRef}
             className="sticky text-white/85 top-0 z-50 flex p-5 md:px-16 font-semibold justify-between items-center bg-transparent backdrop-blur-md border-b-2 border-b-[rgba(255,255,255,0.048)]"
         >
-            <div className="flex justify-center items-center gap-1 cursor-pointer" onClick={() => navigate("/")}>
-                <MdTheaters size={24} /><h2>CineSearch</h2>
-            </div>
+            <NavLink
+                to="/"
+                aria-label="CineSearch Home"
+                className="flex justify-center items-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded-md p-1"
+            >
+                <MdTheaters size={24} aria-hidden="true" /><h2>CineSearch</h2>
+            </NavLink>
 
             <AnimatePresence>
                 {navOptions && (
@@ -136,9 +140,14 @@ const Navbar = () => {
                 ))}
             </ul>
 
-            <div className="block md:hidden" onClick={handleToggleNavOptions}>
-                {!navOptions ? <GiHamburgerMenu size={24} /> : <RxCross2 size={24} strokeWidth={1} />}
-            </div>
+            <button
+                className="block md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded-md p-1 cursor-pointer"
+                onClick={handleToggleNavOptions}
+                aria-label={navOptions ? "Close menu" : "Open menu"}
+                aria-expanded={navOptions}
+            >
+                {!navOptions ? <GiHamburgerMenu size={24} aria-hidden="true" /> : <RxCross2 size={24} strokeWidth={1} aria-hidden="true" />}
+            </button>
         </div>
     );
 };
