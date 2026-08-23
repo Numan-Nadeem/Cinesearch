@@ -12,10 +12,22 @@ export default defineConfig([
       js.configs.recommended,
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
+      {
+        plugins: {
+          react: (await import('eslint-plugin-react')).default
+        },
+        rules: {
+          'react/jsx-uses-react': 'error',
+          'react/jsx-uses-vars': 'error',
+        }
+      }
     ],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.node
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },

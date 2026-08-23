@@ -1,0 +1,3 @@
+## 2025-02-23 - Interactive Element Accessibility
+**Learning:** Common navigation elements like the app logo and mobile hamburger menus in this app's components often rely on basic `div` elements with `onClick` handlers. These lack semantic meaning, keyboard accessibility, and ARIA context.
+**Action:** Always replace interactive `div` wrappers with semantic HTML like `<button>` (for actions) or `<Link>`/`<a>` (for navigation) and ensure proper keyboard focus styling (`focus-visible`) and `aria-label`/`aria-expanded` attributes are present.
