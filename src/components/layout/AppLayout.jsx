@@ -15,7 +15,7 @@ const AppLayout = () => {
   }, [location.pathname]);
 
   return (
-    <div className="cinema-grain min-h-dvh flex flex-col overflow-x-hidden w-full max-w-full bg-[#f8f7f4] text-[#141417] dark:bg-[#09090b] dark:text-[#f4f4f6] transition-colors duration-200">
+    <div className="cinema-grain min-h-dvh flex flex-col overflow-x-clip w-full max-w-full bg-[#f8f7f4] text-[#141417] dark:bg-[#09090b] dark:text-[#f4f4f6] transition-colors duration-200">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-[#d93829] focus:px-4 focus:py-2 focus:text-xs focus:font-semibold focus:text-white focus:shadow-xl focus:outline-none"
@@ -25,7 +25,7 @@ const AppLayout = () => {
       <Navbar />
       <main
         id="main-content"
-        className="overflow-x-hidden w-full max-w-full relative z-10 flex-1 flex flex-col"
+        className="w-full max-w-full relative z-10 flex-1 flex flex-col"
       >
         <ErrorBoundary key={location.pathname}>
           {navigation.state === 'loading' ? (

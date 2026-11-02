@@ -126,24 +126,21 @@ const Home = () => {
       adapter.trending(selectedGenre === 'All' ? '' : selectedGenre, { signal }),
   });
 
-  // GSAP ScrollTrigger Paradigms: Scrubbing Text Reveal, Image Scale & Fade, and Split Scroll Pinning
-  // Strictly gated behind gsap.matchMedia() to honor prefers-reduced-motion: reduce
+  // GSAP ScrollTrigger: Scrubbing Text Reveal only (no DOM pinning or card scaling that causes double scrollbars)
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
 
       mm.add(
         {
-          isDesktop: '(min-width: 1024px) and (prefers-reduced-motion: no-preference)',
           isMotionAllowed: '(prefers-reduced-motion: no-preference)',
           isReduced: '(prefers-reduced-motion: reduce)',
         },
         (context) => {
-          const { isDesktop, isMotionAllowed, isReduced } = context.conditions;
+          const { isMotionAllowed, isReduced } = context.conditions;
 
           if (isReduced) {
             gsap.set('.gsap-scrub-word', { opacity: 1 });
-            gsap.set('.gsap-scale-media', { scale: 1, opacity: 1 });
             return;
           }
 
@@ -152,7 +149,7 @@ const Home = () => {
             if (words.length > 0 && scrubSectionRef.current) {
               gsap.fromTo(
                 words,
-                { opacity: 0.16 },
+                { opacity: 0.22 },
                 {
                   opacity: 1,
                   stagger: 0.05,
@@ -166,48 +163,19 @@ const Home = () => {
                 }
               );
             }
-
-            const mediaCards = gsap.utils.toArray('.gsap-scale-media');
-            mediaCards.forEach((el) => {
-              gsap.fromTo(
-                el,
-                { scale: 0.88, opacity: 0.55 },
-                {
-                  scale: 1,
-                  opacity: 1,
-                  ease: 'power2.out',
-                  scrollTrigger: {
-                    trigger: el,
-                    start: 'top 92%',
-                    end: 'top 35%',
-                    scrub: true,
-                  },
-                }
-              );
-            });
-          }
-
-          if (isDesktop && splitSectionRef.current && splitPinLeftRef.current) {
-            ScrollTrigger.create({
-              trigger: splitSectionRef.current,
-              start: 'top 110px',
-              end: 'bottom bottom',
-              pin: splitPinLeftRef.current,
-              pinSpacing: false,
-            });
           }
         }
       );
 
       return () => mm.revert();
     },
-    { scope: homeRootRef, dependencies: [trendingItems.length, selectedGenre] }
+    { scope: homeRootRef }
   );
 
   const scrubWords = SCRUB_STATEMENT.split(' ');
 
   return (
-    <div ref={homeRootRef} className="flex flex-col w-full max-w-full overflow-x-hidden">
+    <div ref={homeRootRef} className="flex flex-col w-full max-w-full">
       {/* AIDA STAGE 1: ATTENTION — Cinematic Center Hero with 2-Line H1 & Inline Typography Images */}
       <section
         aria-label="Welcome to CineSearch"
@@ -518,15 +486,18 @@ const Home = () => {
         </div>
       </section>
 
-      {/* GSAP Split Scroll-Pinning Trending & Genre Repertory (F8) */}
+      {/* Split Sticky Trending & Genre Repertory (F8) */}
       <section
         ref={splitSectionRef}
         aria-labelledby="trending-heading"
-        className="max-w-7xl w-full mx-auto px-6 md:px-10 py-32 md:py-48"
+        className="max-w-7xl w-full mx-auto px-6 md:px-10 py-24 md:py-36"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-          {/* Left Pinned Column on Desktop */}
-          <div ref={splitPinLeftRef} className="lg:col-span-4 flex flex-col gap-6">
+          {/* Left Sticky Column on Desktop — stays visible while scrolling through the right gallery */}
+          <div
+            ref={splitPinLeftRef}
+            className="lg:col-span-4 lg:sticky lg:top-28 lg:self-start flex flex-col gap-6"
+          >
             <div>
               <span className="font-mono text-xs uppercase tracking-[0.16em] text-[#d93829] dark:text-[#e84a3b] font-semibold block mb-2">
                 Catalogue Spotlight ({providerId.toUpperCase()})
@@ -590,7 +561,7 @@ const Home = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {trendingItems.map((movie) => (
-                  <div key={movie.imdbID} className="gsap-scale-media">
+                  <div key={movie.imdbID}>
                     <MovieCard
                       curMovie={movie}
                       navigateToMovie={() => navigate(`/movies/${movie.imdbID}`)}
