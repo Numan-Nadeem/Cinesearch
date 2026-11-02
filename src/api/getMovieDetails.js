@@ -1,16 +1,10 @@
-export const getMoviesDetails = async ({ params }) => {
-  try {
-    const res = await fetch(
-      `/.netlify/functions/omdb-proxy?movieID=${encodeURIComponent(
-        params.movieID
-      )}`
-    );
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'Proxy request failed');
-    }
-    return await res.json();
-  } catch (error) {
-    console.error(error);
-  }
+import { getProviderAdapter } from './provider.js';
+
+/**
+ * React Router loader & direct fetcher for movie details.
+ * Throws a typed ApiError on not-found, quota, network, or upstream errors (CS-01).
+ */
+export const getMoviesDetails = async ({ params, request }) => {
+  const adapter = getProviderAdapter();
+  return adapter.details(params?.movieID, { signal: request?.signal });
 };

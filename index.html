@@ -1,18 +1,88 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/x-icon" href="/src/assets/icons/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-  </style>
-  <title>CineSearch</title>
+  <meta name="theme-color" content="#0c0c0e" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CineSearch" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- Outfit Display & Body + JetBrains Mono Tabular Numerals -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <title>CineSearch — Discover Movies, Series & Ratings</title>
+  <meta
+    name="description"
+    content="Discover, explore, and enjoy movies and TV shows with search, filters, ratings, and detailed views."
+  />
+
+  <!-- OpenGraph Social Cards -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CineSearch" />
+  <meta property="og:title" content="CineSearch" />
+  <meta
+    property="og:description"
+    content="Discover, explore, and enjoy movies and TV shows with search, filters, ratings, and detailed views."
+  />
+  <meta property="og:image" content="/pwa-512x512.png" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CineSearch" />
+  <meta
+    name="twitter:description"
+    content="Discover, explore, and enjoy movies and TV shows with search, filters, ratings, and detailed views."
+  />
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "CineSearch",
+    "applicationCategory": "EntertainmentApplication",
+    "operatingSystem": "All",
+    "description": "Discover, explore, and enjoy movies and TV shows with search, filters, multi-source ratings, and a personal local watchlist.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- Pre-hydration theme script to prevent flash of wrong theme (F6) -->
+  <script>
+    (function () {
+      try {
+        var raw = localStorage.getItem('cinesearch:theme');
+        var mode = raw ? JSON.parse(raw) : 'dark';
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var resolved = mode === 'system' ? (prefersDark ? 'dark' : 'light') : (mode === 'light' ? 'light' : 'dark');
+        var root = document.documentElement;
+        root.classList.remove('light', 'dark');
+        root.classList.add(resolved);
+        root.style.colorScheme = resolved;
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
 </head>
 
-<body>
-  <div id="root" class="bg-[#28282B]"></div>
+<body class="bg-[#f8f7f4] text-[#141417] dark:bg-[#09090b] dark:text-[#f4f4f6] antialiased selection:bg-[#d93829]/30 transition-colors duration-200 overflow-x-hidden">
+  <div id="root" class="min-h-dvh flex flex-col overflow-x-hidden w-full max-w-full"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 

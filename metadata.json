@@ -1,0 +1,9 @@
+{
+  "name": "CineSearch",
+  "description": "Discover, explore, and enjoy movies and TV shows with search, filters, ratings, and detailed views.",
+  "prompt": "Movie search and exploration application with OMDb API support",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

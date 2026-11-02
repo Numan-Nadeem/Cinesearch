@@ -1,28 +1,36 @@
 {
-  "name": "toggle-switch",
+  "name": "cinesearch",
+  "description": "Discover, explore, and enjoy movies and TV shows with search, filters, ratings, watchlist, and detailed views.",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
+  "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 3000",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "test": "npx --yes tsx --test src/api/adapters.test.js",
+    "preview": "vite preview --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/poppins": "^5.2.6",
+    "@gsap/react": "^2.1.2",
     "@mui/material": "^7.2.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.1.11",
-    "axios": "^1.11.0",
+    "@tanstack/react-query": "^5.105.2",
+    "gsap": "^3.15.0",
     "lucide-react": "^0.525.0",
     "motion": "^12.23.12",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.7.1",
-    "styled-components": "^6.1.19"
+    "react-router-dom": "^7.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
@@ -38,6 +46,7 @@
     "postcss": "^8.5.6",
     "sass-embedded": "^1.89.2",
     "tailwindcss": "^4.1.11",
-    "vite": "^5.4.19"
+    "vite": "^5.4.19",
+    "vite-plugin-pwa": "^2.0.0"
   }
 }
