@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Link2, Check, Share2 } from 'lucide-react';
-import { FaXTwitter, FaWhatsapp, FaRedditAlien } from 'react-icons/fa6';
+import { LinkSimple, Check, ShareNetwork, XLogo, RedditLogo, WhatsappLogo } from '@phosphor-icons/react';
 
 /**
- * Copy-link and social share actions row for movie details (F3).
+ * Copy-link and social share actions row for movie details.
  */
 const ShareRow = ({ title, year }) => {
   const [copied, setCopied] = useState(false);
@@ -47,25 +46,25 @@ const ShareRow = ({ title, year }) => {
   const encodedText = encodeURIComponent(shareText);
 
   return (
-    <div className="flex flex-wrap items-center gap-2" aria-label="Share this title">
+    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0" aria-label="Share this title">
       <button
         type="button"
         onClick={handleCopyLink}
         aria-label={copied ? 'Link copied to clipboard' : 'Copy page link'}
-        className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all duration-200 active:scale-[0.98] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#d93829] ${
+        className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b] whitespace-nowrap shrink-0 ${
           copied
-            ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
-            : 'border-zinc-300/80 dark:border-white/10 bg-white dark:bg-white/[0.04] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 dark:hover:border-white/20 hover:text-zinc-950 dark:hover:text-white'
+            ? 'bg-[#c83a2b] text-white'
+            : 'bg-[#ebe6dc] dark:bg-[#151519] text-[#161514] dark:text-[#f2efe9] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23]'
         }`}
       >
         {copied ? (
           <>
-            <Check className="w-3.5 h-3.5" aria-hidden="true" />
+            <Check size={14} weight="bold" aria-hidden="true" />
             <span>Link copied</span>
           </>
         ) : (
           <>
-            <Link2 className="w-3.5 h-3.5" aria-hidden="true" />
+            <LinkSimple size={14} weight="regular" aria-hidden="true" />
             <span>Copy link</span>
           </>
         )}
@@ -76,9 +75,9 @@ const ShareRow = ({ title, year }) => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`Share ${title} on X (Twitter)`}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300/80 dark:border-white/10 bg-white dark:bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 dark:hover:border-white/20 hover:text-zinc-950 dark:hover:text-white active:scale-[0.98] transition-all duration-200"
+        className="inline-flex items-center gap-1.5 bg-[#ebe6dc] dark:bg-[#151519] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23] px-3 py-2 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] active:scale-[0.98] transition-all duration-150 whitespace-nowrap shrink-0"
       >
-        <FaXTwitter aria-hidden="true" />
+        <XLogo size={14} aria-hidden="true" />
         <span className="hidden sm:inline">Post</span>
       </a>
 
@@ -87,9 +86,9 @@ const ShareRow = ({ title, year }) => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`Share ${title} on Reddit`}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300/80 dark:border-white/10 bg-white dark:bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 dark:hover:border-white/20 hover:text-zinc-950 dark:hover:text-white active:scale-[0.98] transition-all duration-200"
+        className="inline-flex items-center gap-1.5 bg-[#ebe6dc] dark:bg-[#151519] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23] px-3 py-2 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] active:scale-[0.98] transition-all duration-150 whitespace-nowrap shrink-0"
       >
-        <FaRedditAlien aria-hidden="true" />
+        <RedditLogo size={14} aria-hidden="true" />
         <span className="hidden sm:inline">Reddit</span>
       </a>
 
@@ -98,9 +97,9 @@ const ShareRow = ({ title, year }) => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`Share ${title} on WhatsApp`}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300/80 dark:border-white/10 bg-white dark:bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 dark:hover:border-white/20 hover:text-zinc-950 dark:hover:text-white active:scale-[0.98] transition-all duration-200"
+        className="inline-flex items-center gap-1.5 bg-[#ebe6dc] dark:bg-[#151519] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23] px-3 py-2 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] active:scale-[0.98] transition-all duration-150 whitespace-nowrap shrink-0"
       >
-        <FaWhatsapp aria-hidden="true" />
+        <WhatsappLogo size={14} aria-hidden="true" />
         <span className="hidden sm:inline">WhatsApp</span>
       </a>
 
@@ -109,9 +108,9 @@ const ShareRow = ({ title, year }) => {
           type="button"
           onClick={handleNativeShare}
           aria-label="Open system share dialog"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300/80 dark:border-white/10 bg-white dark:bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 dark:hover:border-white/20 cursor-pointer active:scale-[0.98] transition-all duration-200"
+          className="inline-flex items-center gap-1.5 bg-[#ebe6dc] dark:bg-[#151519] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23] px-3 py-2 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] cursor-pointer active:scale-[0.98] transition-all duration-150 whitespace-nowrap shrink-0"
         >
-          <Share2 className="w-3.5 h-3.5" aria-hidden="true" />
+          <ShareNetwork size={14} aria-hidden="true" />
           <span>Share</span>
         </button>
       )}

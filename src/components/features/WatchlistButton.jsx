@@ -1,8 +1,9 @@
-import { Bookmark, Check } from 'lucide-react';
+import { BookmarkSimple, Check } from '@phosphor-icons/react';
 import { useWatchlist } from '../../context/WatchlistContext.jsx';
 
 /**
- * Keyboard-operable Watchlist toggle button for result cards and details page (F2).
+ * Keyboard-operable Watchlist toggle button for result cards and details page.
+ * Flat fill colour, square corners, no glass or resting shadows.
  */
 const WatchlistButton = ({ movie, variant = 'card', className = '' }) => {
   const { isInWatchlist, toggleWatchlist } = useWatchlist();
@@ -23,20 +24,20 @@ const WatchlistButton = ({ movie, variant = 'card', className = '' }) => {
         onClick={handleClick}
         aria-pressed={saved}
         aria-label={saved ? `Remove ${title} from Watchlist` : `Add ${title} to Watchlist`}
-        className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#d93829] cursor-pointer ${
+        className={`inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold transition-all duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b] cursor-pointer whitespace-nowrap shrink-0 ${
           saved
-            ? 'bg-[#d93829] text-white hover:bg-[#b82d20] shadow-md'
-            : 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 border border-transparent'
+            ? 'bg-[#c83a2b] text-white hover:bg-[#a92e21]'
+            : 'bg-[#161514] dark:bg-[#f2efe9] text-[#f2efe9] dark:text-[#161514] hover:opacity-90'
         } ${className}`}
       >
         {saved ? (
           <>
-            <Check className="w-4 h-4" aria-hidden="true" />
+            <Check size={16} weight="bold" aria-hidden="true" />
             <span>In Watchlist</span>
           </>
         ) : (
           <>
-            <Bookmark className="w-4 h-4" aria-hidden="true" />
+            <BookmarkSimple size={16} weight="duotone" aria-hidden="true" />
             <span>Add to Watchlist</span>
           </>
         )}
@@ -51,14 +52,15 @@ const WatchlistButton = ({ movie, variant = 'card', className = '' }) => {
       aria-pressed={saved}
       aria-label={saved ? `Remove ${title} from Watchlist` : `Save ${title} to Watchlist`}
       title={saved ? `Remove ${title} from Watchlist` : `Save ${title} to Watchlist`}
-      className={`inline-flex items-center justify-center rounded-lg p-2 backdrop-blur-md transition-all duration-200 active:scale-[0.95] focus:outline-none focus:ring-2 focus:ring-[#d93829] cursor-pointer shadow-md ${
+      className={`inline-flex items-center justify-center p-2.5 transition-all duration-150 active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b] cursor-pointer ${
         saved
-          ? 'bg-[#d93829] text-white hover:bg-[#b82d20]'
-          : 'bg-black/65 text-white hover:bg-black/85 border border-white/15'
+          ? 'bg-[#c83a2b] text-white hover:bg-[#a92e21]'
+          : 'bg-[#161514] text-[#f2efe9] hover:bg-[#c83a2b] hover:text-white'
       } ${className}`}
     >
-      <Bookmark
-        className={`w-4 h-4 ${saved ? 'fill-current' : ''}`}
+      <BookmarkSimple
+        size={16}
+        weight={saved ? 'fill' : 'regular'}
         aria-hidden="true"
       />
     </button>

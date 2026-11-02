@@ -4,22 +4,36 @@
 
 @layer base {
   :root {
-    --font-display: 'Fraunces', Georgia, serif;
-    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-    --surface-bg: #f8f7f4;
-    --surface-elevated: #ffffff;
-    --surface-recessed: #f0eee9;
-    --surface-border: rgba(20, 20, 23, 0.1);
-    --accent-vermilion: #d93829;
-    --accent-vermilion-hover: #b82d20;
+    --font-display: 'Fraunces', Georgia, Cambria, serif;
+    --font-serif: 'Fraunces', Georgia, Cambria, serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    /* Archival Warm Paper (Light Mode) — Tone-Stepped Flat Surfaces */
+    --surface-bg: #f5f2eb;
+    --surface-elevated: #ebe6dc;
+    --surface-recessed: #e2dcd0;
+    --ink-primary: #161514;
+    --ink-secondary: #494540;
+    --ink-muted: #6b655e;
+
+    /* Single Curatorial Accent: Cinema Vermilion & Archival Brass */
+    --accent-vermilion: #c83a2b;
+    --accent-vermilion-hover: #a92e21;
+    --accent-gold: #b87d24;
   }
 
   .dark {
+    /* 35mm Projection Room (Dark Mode) — Tone-Stepped Flat Surfaces */
     --surface-bg: #0c0c0e;
-    --surface-elevated: #141418;
-    --surface-recessed: #08080a;
-    --surface-border: rgba(255, 255, 255, 0.08);
+    --surface-elevated: #151519;
+    --surface-recessed: #1d1d23;
+    --ink-primary: #f2efe9;
+    --ink-secondary: #b5b0a8;
+    --ink-muted: #8a847c;
+
+    --accent-vermilion: #d94636;
+    --accent-vermilion-hover: #c83a2b;
+    --accent-gold: #deb052;
   }
 
   html {
@@ -27,34 +41,83 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  h1, h2, h3, .font-display {
+  h1, h2, h3, h4, h5, h6, .font-display {
     font-family: var(--font-display);
     text-wrap: balance;
+    font-optical-sizing: auto;
   }
 
-  p {
+  p, li, dd {
     text-wrap: pretty;
   }
 
-  .font-mono, .tabular-nums {
-    font-family: var(--font-mono);
+  /* Tabular numerals use the text face (no monospace outside code/pre) */
+  .tabular-nums, .font-mono {
+    font-family: var(--font-sans);
     font-variant-numeric: tabular-nums;
+  }
+
+  code, pre, kbd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 }
 
-/* Subtle cinema film-grain overlay for atmospheric depth */
+/* Flat ground surface (no radial gradients) */
 .cinema-grain {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
-  background-size: 24px 24px;
+  background-color: var(--surface-bg);
 }
 
-/* Motion-safe entrance animation for cards and sections (`impeccable animate`) */
+/* Tone-stepped surface (no hairline borders, no resting shadows) */
+.archival-surface {
+  background-color: var(--surface-elevated);
+}
+
+/* Interactive surface with compositor-only transform feedback (no glow or resting shadow) */
+.spotlight-card {
+  position: relative;
+  background-color: var(--surface-elevated);
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Variable font weight & optical size interpolation on interactive display titles */
+.variable-display-link {
+  font-variation-settings: "opsz" 36, "wght" 680;
+  transition:
+    color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    font-variation-settings 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.group:hover .variable-display-link,
+.variable-display-link:hover {
+  font-variation-settings: "opsz" 72, "wght" 760;
+}
+
+/* Editorial Drop Cap for Monograph & Film Synopses */
+.editorial-dropcap::first-letter {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 3.1rem;
+  line-height: 0.88;
+  float: left;
+  margin-right: 0.75rem;
+  margin-top: 0.2rem;
+  color: var(--accent-vermilion);
+}
+
+/* Smooth spring-like entrance animation */
 @keyframes fadeSlideUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -63,7 +126,7 @@
 }
 
 .animate-editorial-in {
-  animation: fadeSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: fadeSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

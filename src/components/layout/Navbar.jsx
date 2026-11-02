@@ -1,60 +1,22 @@
 import { NavLink, Link } from 'react-router-dom';
-import { MdTheaters } from 'react-icons/md';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import { RxCross2 } from 'react-icons/rx';
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Database } from 'lucide-react';
+import { List, X } from '@phosphor-icons/react';
 import { useWatchlist } from '../../context/WatchlistContext.jsx';
-import ThemeToggle from '../ui/ThemeToggle.jsx';
-import { PWAInstallButton } from '../features/PWAInstallButton.jsx';
-import { useActiveProvider } from '../../hooks/useMovieSearch.js';
-import { setActiveProviderId } from '../../api/provider.js';
-
-const navVariants = {
-  open: {
-    transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0.03,
-    },
-    opacity: 1,
-    height: 'auto',
-  },
-  closed: {
-    transition: {
-      staggerChildren: 0.04,
-      staggerDirection: -1,
-    },
-    opacity: 0,
-    height: 0,
-  },
-};
-
-const itemVariants = {
-  open: { opacity: 1, y: 0 },
-  closed: { opacity: 0, y: -10 },
-};
 
 const NAV_LINKS = [
   { path: '/', label: 'Home' },
   { path: '/movies', label: 'Catalogue' },
   { path: '/watchlist', label: 'Watchlist', isWatchlist: true },
-  { path: '/about', label: 'About' },
-  { path: '/contact', label: 'Contact' },
+  { path: '/about', label: 'Monograph' },
+  { path: '/contact', label: 'Dispatch' },
 ];
 
 const Navbar = () => {
   const [navOptions, setNavOptions] = useState(false);
   const navbarRef = useRef(null);
   const { count } = useWatchlist();
-  const providerId = useActiveProvider();
 
   const handleToggleNavOptions = () => setNavOptions((prev) => !prev);
-
-  const handleToggleProvider = () => {
-    const next = providerId === 'omdb' ? 'tmdb' : 'omdb';
-    setActiveProviderId(next);
-  };
 
   useEffect(() => {
     if (!navOptions) return;
@@ -72,31 +34,34 @@ const Navbar = () => {
   return (
     <header
       ref={navbarRef}
-      className="sticky top-0 z-50 px-4 pt-3 pb-2 md:px-8 transition-colors duration-200"
+      className="w-full bg-[#f5f2eb] dark:bg-[#0c0c0e] text-[#161514] dark:text-[#f2efe9] transition-colors duration-200"
     >
-      <div className="max-w-7xl mx-auto rounded-2xl border border-zinc-200/90 dark:border-white/10 bg-[#f8f7f4]/85 dark:bg-[#111115]/80 backdrop-blur-2xl shadow-lg px-5 py-3 flex items-center justify-between gap-4">
+      {/* Top Bar Contract: 3 zones separated by gap-8, equal outer margins */}
+      <div className="max-w-[1360px] mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-8">
+        {/* Zone 1: Single-line Brand Wordmark */}
         <Link
           to="/"
           aria-label="CineSearch Home"
-          className="inline-flex items-center gap-2.5 text-lg font-bold tracking-tight text-zinc-900 dark:text-white hover:text-[#d93829] dark:hover:text-[#e84a3b] transition-colors duration-200"
+          className="text-xl font-display font-bold tracking-tight text-[#161514] dark:text-[#f2efe9] hover:text-[#c83a2b] dark:hover:text-[#d94636] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b] whitespace-nowrap shrink-0"
         >
-          <MdTheaters size={24} className="text-[#d93829]" aria-hidden="true" />
-          <span className="font-display text-xl font-extrabold tracking-tight">
-            CineSearch
-          </span>
+          CineSearch
         </Link>
 
-        {/* Desktop Split Glass Navigation */}
-        <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1 rounded-full bg-zinc-200/60 dark:bg-white/[0.04] border border-zinc-300/60 dark:border-white/[0.06] px-2 py-1">
+        {/* Zone 2: 5 concise single-line text navigation links */}
+        <nav
+          aria-label="Main navigation"
+          className="hidden md:flex items-center gap-8"
+        >
           {NAV_LINKS.map(({ path, label, isWatchlist }) => (
             <NavLink
               key={path}
               to={path}
+              end={path === '/'}
               className={({ isActive }) =>
-                `relative inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs uppercase tracking-[0.08em] font-semibold transition-all duration-200 ${
+                `inline-flex items-center gap-1.5 py-2 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b] whitespace-nowrap shrink-0 ${
                   isActive
-                    ? 'bg-[#d93829] text-white shadow-sm'
-                    : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white'
+                    ? 'text-[#c83a2b] dark:text-[#d94636] font-semibold'
+                    : 'text-[#494540] dark:text-[#b5b0a8] hover:text-[#161514] dark:hover:text-[#f2efe9]'
                 }`
               }
             >
@@ -105,30 +70,23 @@ const Navbar = () => {
                 <span
                   data-testid="navbar-watchlist-count"
                   aria-label={`${count} saved titles in watchlist`}
-                  className="font-mono tabular-nums text-[11px] opacity-90"
+                  className="tabular-nums text-xs text-[#c83a2b] dark:text-[#d94636] font-semibold"
                 >
-                  ({count})
+                  · {count}
                 </span>
               )}
             </NavLink>
           ))}
         </nav>
 
-        {/* Action Controls: Provider Switcher (F8), PWA Install (F7), Theme Toggle (F6), Mobile Menu */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleToggleProvider}
-            aria-label={`Catalogue Provider: ${providerId.toUpperCase()} (click to switch)`}
-            title={`Active Data Adapter: ${providerId.toUpperCase()} — Click to toggle between OMDb and TMDB`}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-300/80 dark:border-white/15 bg-white dark:bg-white/[0.06] px-3 py-1.5 text-xs font-semibold text-zinc-900 dark:text-white hover:border-[#d93829] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#d93829] cursor-pointer transition-all duration-200"
+        {/* Zone 3: 1 Primary Action */}
+        <div className="flex items-center gap-3 shrink-0">
+          <Link
+            to="/movies"
+            className="hidden sm:inline-flex items-center justify-center bg-[#c83a2b] hover:bg-[#a92e21] active:scale-[0.98] px-4 py-2 text-xs font-semibold text-white transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b] whitespace-nowrap shrink-0"
           >
-            <Database className="w-3.5 h-3.5 text-[#d93829]" aria-hidden="true" />
-            <span className="font-mono uppercase tracking-wider text-[11px]">{providerId}</span>
-          </button>
-
-          <PWAInstallButton />
-          <ThemeToggle />
+            Search Index
+          </Link>
 
           <button
             type="button"
@@ -136,57 +94,48 @@ const Navbar = () => {
             aria-expanded={navOptions}
             aria-controls="mobile-nav-menu"
             aria-label={navOptions ? 'Close navigation menu' : 'Open navigation menu'}
-            className="inline-flex md:hidden items-center justify-center p-2 rounded-xl text-zinc-900 dark:text-white hover:bg-zinc-200/70 dark:hover:bg-white/10 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#d93829] cursor-pointer transition-all duration-200"
+            className="inline-flex md:hidden items-center justify-center w-11 h-11 bg-[#ebe6dc] dark:bg-[#151519] text-[#161514] dark:text-[#f2efe9] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b] cursor-pointer transition-all duration-150"
           >
-            {!navOptions ? (
-              <GiHamburgerMenu size={20} aria-hidden="true" />
+            {navOptions ? (
+              <X size={20} weight="regular" aria-hidden="true" />
             ) : (
-              <RxCross2 size={20} aria-hidden="true" />
+              <List size={20} weight="regular" aria-hidden="true" />
             )}
           </button>
         </div>
       </div>
 
       {/* Mobile Navigation Drawer */}
-      <AnimatePresence>
-        {navOptions && (
-          <motion.ul
-            id="mobile-nav-menu"
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={navVariants}
-            className="flex flex-col bg-[#f8f7f4] dark:bg-[#141418] w-[calc(100%-2rem)] mx-auto mt-2 rounded-2xl px-6 py-5 gap-3.5 md:hidden border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden"
-          >
-            {NAV_LINKS.map(({ path, label, isWatchlist }) => (
-              <motion.li
-                key={path}
-                variants={itemVariants}
-                className="w-full flex"
+      {navOptions && (
+        <ul
+          id="mobile-nav-menu"
+          className="flex flex-col bg-[#ebe6dc] dark:bg-[#151519] w-full px-5 py-5 gap-1 md:hidden"
+        >
+          {NAV_LINKS.map(({ path, label, isWatchlist }) => (
+            <li key={path} className="w-full flex">
+              <NavLink
+                to={path}
+                end={path === '/'}
+                className={({ isActive }) =>
+                  `inline-flex items-center justify-between w-full text-base font-medium py-2.5 px-3 ${
+                    isActive
+                      ? 'bg-[#e2dcd0] dark:bg-[#1d1d23] text-[#c83a2b] dark:text-[#d94636] font-semibold'
+                      : 'text-[#161514] dark:text-[#f2efe9]'
+                  }`
+                }
+                onClick={() => setNavOptions(false)}
               >
-                <NavLink
-                  to={path}
-                  className={({ isActive }) =>
-                    `inline-flex items-center justify-between w-full text-base font-semibold py-1.5 border-b border-zinc-200/50 dark:border-white/5 ${
-                      isActive
-                        ? 'text-[#d93829] dark:text-[#e84a3b]'
-                        : 'text-zinc-800 dark:text-zinc-200'
-                    }`
-                  }
-                  onClick={() => setNavOptions(false)}
-                >
-                  <span>{label}</span>
-                  {isWatchlist && (
-                    <span className="font-mono tabular-nums text-xs text-zinc-500 dark:text-zinc-400">
-                      {count} saved
-                    </span>
-                  )}
-                </NavLink>
-              </motion.li>
-            ))}
-          </motion.ul>
-        )}
-      </AnimatePresence>
+                <span>{label}</span>
+                {isWatchlist && (
+                  <span className="tabular-nums text-xs text-[#494540] dark:text-[#b5b0a8]">
+                    {count} saved
+                  </span>
+                )}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      )}
     </header>
   );
 };

@@ -1,36 +1,46 @@
 import { useState } from 'react';
-import { FaEnvelope, FaGithub, FaFacebook, FaLinkedin } from 'react-icons/fa';
-import { ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  EnvelopeSimple,
+  GithubLogo,
+  LinkedinLogo,
+  FacebookLogo,
+  ArrowUpRight,
+  ArrowLeft,
+  CheckCircle,
+  PaperPlaneTilt,
+} from '@phosphor-icons/react';
 import contactBg from '../assets/images/contact_bg2.jpg';
 import { useDocumentMeta } from '../lib/seo.js';
+import { MEDIA_PROVENANCE } from '../design/mediaProvenance.js';
 
 const SOCIAL_CHANNELS = [
   {
     label: 'Email',
     handle: 'noman.mughal256@gmail.com',
     href: 'mailto:noman.mughal256@gmail.com',
-    icon: FaEnvelope,
+    icon: EnvelopeSimple,
     external: false,
   },
   {
     label: 'GitHub',
     handle: 'github.com/Numan-Nadeem',
     href: 'https://github.com/Numan-Nadeem',
-    icon: FaGithub,
+    icon: GithubLogo,
     external: true,
   },
   {
     label: 'LinkedIn',
     handle: 'linkedin.com/in/numannadeem',
     href: 'https://www.linkedin.com/in/numannadeem/',
-    icon: FaLinkedin,
+    icon: LinkedinLogo,
     external: true,
   },
   {
     label: 'Facebook',
     handle: 'Numan Nadeem',
     href: 'https://www.facebook.com/share/1E6hq7DJD6/',
-    icon: FaFacebook,
+    icon: FacebookLogo,
     external: true,
   },
 ];
@@ -44,6 +54,7 @@ const Contact = () => {
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState({});
   const [submittedData, setSubmittedData] = useState(null);
+  const [avatarSrc, setAvatarSrc] = useState(MEDIA_PROVENANCE.creatorAvatar.url);
 
   useDocumentMeta({
     title: 'Contact — Numan Nadeem',
@@ -80,71 +91,85 @@ const Contact = () => {
   return (
     <section
       aria-label="Contact Numan Nadeem"
-      className="relative flex-1 flex items-center py-14 px-6 md:px-10 bg-cover bg-center overflow-hidden"
-      style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(12,12,14,0.62), rgba(12,12,14,0.82)), url(${contactBg})`,
-      }}
+      className="flex-1 py-14 md:py-24 px-5 sm:px-8 max-w-[1360px] w-full mx-auto animate-editorial-in"
     >
-      {/* Ambient backdrop light blooms behind glass panels */}
-      <div
-        aria-hidden="true"
-        className="absolute top-12 left-[15%] w-96 h-96 rounded-full bg-[#d93829]/30 blur-3xl pointer-events-none z-0"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute bottom-12 right-[12%] w-96 h-96 rounded-full bg-amber-500/20 blur-3xl pointer-events-none z-0"
-      />
+      <div className="mb-8">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] hover:text-[#c83a2b] dark:hover:text-[#d94636] transition-colors"
+        >
+          <ArrowLeft size={14} weight="bold" aria-hidden="true" />
+          <span>Return to Repertory Index</span>
+        </Link>
+      </div>
 
-      <div className="relative z-10 max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-        {/* Left Column: Frosted Glass Creator Dossier & Direct Channels */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        {/* Left Column: Editorial Creator Dossier & Direct Channels */}
         <div
           data-testid="contact-glass-dossier"
-          className="glass-panel glass-panel-interactive glass-enter lg:col-span-5 p-6 sm:p-8 text-white"
+          className="lg:col-span-5 bg-[#ebe6dc] dark:bg-[#151519] p-6 sm:p-8 text-[#161514] dark:text-[#f2efe9]"
         >
-          <div className="glass-sweep" aria-hidden="true" />
-
-          <div className="relative z-10 flex items-center gap-4 pb-6 border-b border-white/15">
+          <div className="flex items-center gap-4 pb-6">
             <img
-              src="https://avatars.githubusercontent.com/Numan-Nadeem"
+              src={avatarSrc}
               alt="Numan Nadeem"
+              onError={() => setAvatarSrc(MEDIA_PROVENANCE.creatorAvatar.fallbackPhoto)}
               referrerPolicy="no-referrer"
-              className="w-16 h-16 rounded-2xl object-cover border border-white/30 shrink-0 bg-zinc-800 shadow-lg"
+              className="w-16 h-16 object-cover shrink-0 bg-[#1d1d23]"
             />
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#ff6b5e] glass-text-shadow">
-                Creator &amp; Lead Engineer
-              </p>
-              <h1 className="font-display text-2xl font-bold text-white tracking-tight glass-text-shadow">
+              <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#161514] dark:text-white tracking-tight">
                 Numan Nadeem
               </h1>
-              <p className="text-xs text-zinc-200/90 mt-0.5">
-                Full-Stack Developer · Open Source Maintainer
+              <p className="text-xs font-semibold text-[#c83a2b] dark:text-[#d94636] mt-1">
+                Creator &amp; Lead Engineer · MIT License
               </p>
             </div>
           </div>
 
-          <p className="relative z-10 text-sm text-zinc-100/95 leading-relaxed my-5 glass-text-shadow">
-            Have a question about CineSearch, found a missing film record, or want to collaborate on a project? Connect directly through any channel below.
+          <figure className="mb-5 overflow-hidden bg-[#1b1b21]">
+            <img
+              src={contactBg}
+              alt="35mm optical projection assembly plate"
+              loading="lazy"
+              decoding="async"
+              className="w-full aspect-[16/9] object-cover grayscale contrast-125"
+            />
+          </figure>
+
+          <p className="text-base text-[#494540] dark:text-[#b5b0a8] leading-relaxed mb-6">
+            Have a question about CineSearch, found a missing film record, or want to collaborate on a project? Connect directly through any verified channel below.
           </p>
 
-          <div className="relative z-10 space-y-2.5">
-            {SOCIAL_CHANNELS.map(({ label, handle, href, icon: Icon, external }) => (
+          <div className="flex flex-col gap-2">
+            {SOCIAL_CHANNELS.map(({ label, handle, href, icon: ChannelIcon, external }) => (
               <a
                 key={label}
                 href={href}
                 target={external ? '_blank' : undefined}
                 rel={external ? 'noopener noreferrer' : undefined}
-                className="glass-control group flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white active:scale-[0.99]"
+                className="group flex items-center justify-between gap-3 p-3.5 bg-[#e2dcd0] dark:bg-[#1d1d23] hover:bg-[#d5cec0] dark:hover:bg-[#26262e] text-sm font-medium text-[#161514] dark:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b]"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <Icon className="text-lg text-[#ff6b5e] shrink-0" aria-hidden="true" />
+                  <ChannelIcon
+                    size={20}
+                    weight="duotone"
+                    className="text-[#c83a2b] dark:text-[#d94636] shrink-0"
+                    aria-hidden="true"
+                  />
                   <div className="truncate">
-                    <span className="block font-semibold text-white">{label}</span>
-                    <span className="block text-xs text-zinc-200/85 truncate">{handle}</span>
+                    <span className="block font-semibold text-[#161514] dark:text-white group-hover:text-[#c83a2b] dark:group-hover:text-[#d94636] transition-colors">
+                      {label}
+                    </span>
+                    <span className="block text-xs text-[#494540] dark:text-[#b5b0a8] truncate">
+                      {handle}
+                    </span>
                   </div>
                 </div>
                 <ArrowUpRight
-                  className="w-4 h-4 text-zinc-300 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0"
+                  size={15}
+                  weight="bold"
+                  className="text-[#6b655e] group-hover:text-[#c83a2b] dark:group-hover:text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0"
                   aria-hidden="true"
                 />
               </a>
@@ -152,188 +177,191 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* Right Column: Frosted Glass Direct Inquiry Form */}
+        {/* Right Column: Direct Dispatch Inquiry Form */}
         <div
           data-testid="contact-glass-form"
-          className="glass-panel glass-panel-interactive glass-enter lg:col-span-7 p-6 sm:p-8 text-white"
+          data-ui="dispatch-form"
+          className="lg:col-span-7 bg-[#ebe6dc] dark:bg-[#151519] p-6 sm:p-8 text-[#161514] dark:text-[#f2efe9]"
         >
-          <div className="relative z-10">
-            <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#ff6b5e] mb-1.5 glass-text-shadow">
-              Direct Dispatch
-            </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-white mb-2 glass-text-shadow">
-              Send a Message
-            </h2>
-            <p className="text-sm text-zinc-200/90 mb-6 glass-text-shadow">
-              Submit catalogue feedback, bug reports, or partnership inquiries below.
-            </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#161514] dark:text-white mb-2">
+            Send a dispatch
+          </h2>
+          <p className="text-base text-[#494540] dark:text-[#b5b0a8] mb-6">
+            Submit catalogue feedback, bug reports, or collaboration inquiries below.
+          </p>
 
-            {submittedData ? (
-              <div
-                role="status"
-                aria-live="polite"
-                data-testid="contact-success"
-                className="rounded-xl border border-emerald-400/40 bg-emerald-500/15 backdrop-blur-md p-6 text-left space-y-4"
-              >
-                <div className="flex items-center gap-2.5 text-emerald-300 font-semibold text-base">
-                  <CheckCircle2 className="w-5 h-5 shrink-0" aria-hidden="true" />
-                  <span>Message prepared for {submittedData.name}</span>
-                </div>
-                <p className="text-sm text-zinc-100 leading-relaxed">
-                  Thank you for reaching out regarding <strong>{submittedData.topic}</strong>. You can also open this dispatch directly in your default mail client or send another note below.
-                </p>
-                <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <a
-                    href={`mailto:noman.mughal256@gmail.com?subject=${encodeURIComponent(
-                      `[CineSearch] ${submittedData.topic} — from ${submittedData.name}`
-                    )}&body=${encodeURIComponent(
-                      `${submittedData.message}\n\n— ${submittedData.name} (${submittedData.email})`
-                    )}`}
-                    className="inline-flex items-center gap-2 rounded-lg bg-[#d93829] hover:bg-[#b82d20] active:scale-[0.98] px-4 py-2 text-xs font-semibold text-white transition-all"
-                  >
-                    Open in Mail Client
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSubmittedData(null);
-                      setName('');
-                      setEmail('');
-                      setMessage('');
-                      setErrors({});
-                    }}
-                    className="glass-control rounded-lg px-4 py-2 text-xs font-medium text-white cursor-pointer"
-                  >
-                    Send another message
-                  </button>
-                </div>
+          {submittedData ? (
+            <div
+              role="status"
+              aria-live="polite"
+              data-testid="contact-success"
+              className="bg-[#e2dcd0] dark:bg-[#1d1d23] p-6 text-left space-y-4"
+            >
+              <div className="flex items-center gap-2.5 text-[#161514] dark:text-[#deb052] font-semibold text-base">
+                <CheckCircle
+                  size={22}
+                  weight="duotone"
+                  className="text-[#b87d24] dark:text-[#deb052] shrink-0"
+                  aria-hidden="true"
+                />
+                <span>Message prepared for {submittedData.name}</span>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} noValidate className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label
-                      htmlFor="contact-name"
-                      className="block text-xs font-medium text-zinc-200 mb-1.5 glass-text-shadow"
-                    >
-                      Your Name
-                    </label>
-                    <input
-                      id="contact-name"
-                      type="text"
-                      value={name}
-                      onChange={(e) => {
-                        setName(e.target.value);
-                        if (errors.name) setErrors((prev) => ({ ...prev, name: '' }));
-                      }}
-                      placeholder="Ada Lovelace"
-                      aria-invalid={Boolean(errors.name)}
-                      aria-describedby={errors.name ? 'contact-name-error' : undefined}
-                      className="w-full rounded-xl border border-white/25 bg-black/45 px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#d93829]"
-                    />
-                    {errors.name && (
-                      <p
-                        id="contact-name-error"
-                        role="alert"
-                        className="mt-1.5 text-xs text-[#ff6b5e]"
-                      >
-                        {errors.name}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="contact-email"
-                      className="block text-xs font-medium text-zinc-200 mb-1.5 glass-text-shadow"
-                    >
-                      Email Address
-                    </label>
-                    <input
-                      id="contact-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
-                      }}
-                      placeholder="ada@example.com"
-                      aria-invalid={Boolean(errors.email)}
-                      aria-describedby={errors.email ? 'contact-email-error' : undefined}
-                      className="w-full rounded-xl border border-white/25 bg-black/45 px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#d93829]"
-                    />
-                    {errors.email && (
-                      <p
-                        id="contact-email-error"
-                        role="alert"
-                        className="mt-1.5 text-xs text-[#ff6b5e]"
-                      >
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
+              <p className="text-base text-[#494540] dark:text-[#b5b0a8] leading-relaxed">
+                Thank you for reaching out regarding <strong>{submittedData.topic}</strong>. You can open this dispatch directly in your default mail client or send another note below.
+              </p>
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <a
+                  href={`mailto:noman.mughal256@gmail.com?subject=${encodeURIComponent(
+                    `[CineSearch] ${submittedData.topic} — from ${submittedData.name}`
+                  )}&body=${encodeURIComponent(
+                    `${submittedData.message}\n\n— ${submittedData.name} (${submittedData.email})`
+                  )}`}
+                  className="inline-flex items-center gap-2 bg-[#c83a2b] hover:bg-[#a92e21] active:scale-[0.98] px-5 py-2.5 text-xs font-semibold text-white transition-all"
+                >
+                  <span>Open in Mail Client</span>
+                  <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSubmittedData(null);
+                    setName('');
+                    setEmail('');
+                    setMessage('');
+                    setErrors({});
+                  }}
+                  className="bg-[#f5f2eb] dark:bg-[#0c0c0e] px-5 py-2.5 text-xs font-semibold text-[#161514] dark:text-white hover:bg-[#dad3c5] dark:hover:bg-[#26262e] cursor-pointer"
+                >
+                  Send another message
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} noValidate className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label
-                    htmlFor="contact-topic"
-                    className="block text-xs font-medium text-zinc-200 mb-1.5 glass-text-shadow"
+                    htmlFor="contact-name"
+                    className="block text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] mb-1.5"
                   >
-                    Subject
+                    Your Name
                   </label>
-                  <select
-                    id="contact-topic"
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    className="w-full rounded-xl border border-white/25 bg-black/45 px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#d93829]"
-                  >
-                    <option value="Catalogue Feedback" className="bg-zinc-900">Catalogue Feedback</option>
-                    <option value="Feature Request" className="bg-zinc-900">Feature Request</option>
-                    <option value="Bug Report" className="bg-zinc-900">Bug Report</option>
-                    <option value="General Inquiry" className="bg-zinc-900">General Inquiry</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="contact-message"
-                    className="block text-xs font-medium text-zinc-200 mb-1.5 glass-text-shadow"
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    id="contact-message"
-                    rows={4}
-                    value={message}
+                  <input
+                    id="contact-name"
+                    type="text"
+                    value={name}
                     onChange={(e) => {
-                      setMessage(e.target.value);
-                      if (errors.message) setErrors((prev) => ({ ...prev, message: '' }));
+                      setName(e.target.value);
+                      if (errors.name) setErrors((prev) => ({ ...prev, name: '' }));
                     }}
-                    placeholder="Share your feedback, film recommendation, or question..."
-                    aria-invalid={Boolean(errors.message)}
-                    aria-describedby={errors.message ? 'contact-message-error' : undefined}
-                    className="w-full rounded-xl border border-white/25 bg-black/45 p-3.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#d93829]"
+                    placeholder="Elena Rostova"
+                    aria-invalid={Boolean(errors.name)}
+                    aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                    className="w-full bg-[#f5f2eb] dark:bg-[#0c0c0e] px-3.5 py-2.5 text-sm text-[#161514] dark:text-white placeholder:text-[#6b655e] focus:outline-none focus:ring-2 focus:ring-[#c83a2b]"
                   />
-                  {errors.message && (
+                  {errors.name && (
                     <p
-                      id="contact-message-error"
+                      id="contact-name-error"
                       role="alert"
-                      className="mt-1.5 text-xs text-[#ff6b5e]"
+                      className="mt-1.5 text-xs font-semibold text-[#c83a2b] dark:text-[#d94636]"
                     >
-                      {errors.message}
+                      {errors.name}
                     </p>
                   )}
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full sm:w-auto rounded-xl bg-[#d93829] hover:bg-[#b82d20] active:scale-[0.98] px-7 py-3 text-sm font-semibold text-white cursor-pointer transition-all duration-200 shadow-lg"
+                <div>
+                  <label
+                    htmlFor="contact-email"
+                    className="block text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] mb-1.5"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="contact-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+                    }}
+                    placeholder="elena.rostova@cinematheque.org"
+                    aria-invalid={Boolean(errors.email)}
+                    aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                    className="w-full bg-[#f5f2eb] dark:bg-[#0c0c0e] px-3.5 py-2.5 text-sm text-[#161514] dark:text-white placeholder:text-[#6b655e] focus:outline-none focus:ring-2 focus:ring-[#c83a2b]"
+                  />
+                  {errors.email && (
+                    <p
+                      id="contact-email-error"
+                      role="alert"
+                      className="mt-1.5 text-xs font-semibold text-[#c83a2b] dark:text-[#d94636]"
+                    >
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="contact-topic"
+                  className="block text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] mb-1.5"
                 >
-                  Send Message
-                </button>
-              </form>
-            )}
-          </div>
+                  Subject
+                </label>
+                <select
+                  id="contact-topic"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  className="w-full bg-[#f5f2eb] dark:bg-[#0c0c0e] px-3.5 py-2.5 text-sm text-[#161514] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#c83a2b]"
+                >
+                  <option value="Catalogue Feedback">Catalogue Feedback</option>
+                  <option value="Feature Request">Feature Request</option>
+                  <option value="Bug Report">Bug Report</option>
+                  <option value="General Inquiry">General Inquiry</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="contact-message"
+                  className="block text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] mb-1.5"
+                >
+                  Message
+                </label>
+                <textarea
+                  id="contact-message"
+                  rows={4}
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                    if (errors.message) setErrors((prev) => ({ ...prev, message: '' }));
+                  }}
+                  placeholder="Share your feedback, film recommendation, or question..."
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={errors.message ? 'contact-message-error' : undefined}
+                  className="w-full bg-[#f5f2eb] dark:bg-[#0c0c0e] p-3.5 text-sm text-[#161514] dark:text-white placeholder:text-[#6b655e] focus:outline-none focus:ring-2 focus:ring-[#c83a2b]"
+                />
+                {errors.message && (
+                  <p
+                    id="contact-message-error"
+                    role="alert"
+                    className="mt-1.5 text-xs font-semibold text-[#c83a2b] dark:text-[#d94636]"
+                  >
+                    {errors.message}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#c83a2b] hover:bg-[#a92e21] active:scale-[0.98] px-7 py-3 text-xs font-semibold text-white cursor-pointer transition-all duration-150"
+              >
+                <span>Send Message</span>
+                <PaperPlaneTilt size={15} weight="duotone" aria-hidden="true" />
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </section>

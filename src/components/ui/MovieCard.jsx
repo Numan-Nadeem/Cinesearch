@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Star } from 'lucide-react';
+import { Star, ArrowUpRight } from '@phosphor-icons/react';
 import PosterArtwork from './PosterArtwork.jsx';
 import WatchlistButton from '../features/WatchlistButton.jsx';
 
 /**
- * MovieCard with accessible link, lazy-loaded 2:3 poster with N/A fallback,
- * group-hover:scale-105 duration-700 physics, unboxed typographic metadata, and Watchlist toggle (CS-03, CS-15, F2).
+ * Editorial MovieCard with 2:3 square-cornered poster artwork,
+ * tone-stepped flat surface, unboxed typographic metadata, and bottom-pinned dossier action.
  */
 const MovieCard = ({ curMovie, navigateToMovie }) => {
   if (!curMovie) return null;
@@ -19,74 +19,95 @@ const MovieCard = ({ curMovie, navigateToMovie }) => {
     curMovie.imdbRating && curMovie.imdbRating !== 'N/A'
   );
 
+  const handleLinkClick = (e) => {
+    if (navigateToMovie) {
+      e.preventDefault();
+      navigateToMovie();
+    }
+  };
+
   return (
-    <article className="group relative flex flex-col h-full rounded-2xl overflow-hidden bg-white dark:bg-[#121216] border border-zinc-200/80 dark:border-white/[0.08] shadow-xs hover:shadow-2xl hover:border-zinc-300 dark:hover:border-white/20 transition-all duration-500 hover:-translate-y-1">
-      <div className="relative aspect-[2/3] w-full overflow-hidden bg-zinc-900">
+    <article className="spotlight-card group relative flex flex-col h-full overflow-hidden bg-[#ebe6dc] dark:bg-[#151519]">
+      {/* 2:3 Square-Cornered Poster Container */}
+      <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#151519]">
         <Link
           to={detailsPath}
-          onClick={(e) => {
-            if (navigateToMovie) {
-              e.preventDefault();
-              navigateToMovie();
-            }
-          }}
+          onClick={handleLinkClick}
           aria-label={`View details for ${curMovie.Title} (${curMovie.Year})`}
-          className="block w-full h-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#d93829]"
+          className="block w-full h-full overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#c83a2b]"
         >
           <PosterArtwork
             src={curMovie.Poster}
             title={curMovie.Title}
             year={curMovie.Year}
-            className="w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-500"
+            className="w-full h-full group-hover:scale-105 transition-transform duration-500 ease-out"
           />
         </Link>
 
-        <div className="absolute top-2.5 right-2.5 z-10">
+        {/* Top-Right Watchlist Bookmark */}
+        <div className="absolute top-3 right-3 z-10">
           <WatchlistButton movie={curMovie} variant="card" />
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 justify-between p-4">
-        <Link
-          to={detailsPath}
-          onClick={(e) => {
-            if (navigateToMovie) {
-              e.preventDefault();
-              navigateToMovie();
-            }
-          }}
-          className="font-display text-base font-bold tracking-tight text-zinc-900 dark:text-zinc-100 group-hover:text-[#d93829] dark:group-hover:text-[#e84a3b] line-clamp-2 mb-2.5 transition-colors focus:outline-none focus:underline"
-        >
-          {curMovie.Title}
-        </Link>
+      {/* Editorial Body & Bottom-Pinned Footer */}
+      <div className="relative z-10 flex flex-col flex-1 justify-between p-5">
+        <div>
+          <Link
+            to={detailsPath}
+            onClick={handleLinkClick}
+            className="variable-display-link font-display text-lg font-bold tracking-tight text-[#161514] dark:text-[#f2efe9] group-hover:text-[#c83a2b] dark:group-hover:text-[#d94636] line-clamp-2 leading-snug block mb-2 focus-visible:outline-none focus-visible:underline"
+          >
+            {curMovie.Title}
+          </Link>
 
-        {/* Unboxed typographic metadata row */}
-        <div className="mt-auto pt-2.5 border-t border-zinc-100 dark:border-white/[0.06] flex items-center justify-between gap-2 text-xs font-mono tabular-nums text-zinc-500 dark:text-zinc-400">
-          <span className="truncate flex items-center gap-2">
-            <span className="font-sans font-semibold text-zinc-700 dark:text-zinc-300">
-              {typeLabel}
+          {/* Unboxed Typographic Metadata Line */}
+          <div className="flex items-center justify-between gap-2 text-xs tabular-nums text-[#494540] dark:text-[#b5b0a8]">
+            <span className="truncate">
+              <span className="font-medium text-[#161514] dark:text-[#f2efe9]">
+                {typeLabel}
+              </span>
+              {curMovie.Year ? (
+                <>
+                  <span aria-hidden="true" className="mx-1.5">
+                    ·
+                  </span>
+                  <span>{curMovie.Year}</span>
+                </>
+              ) : null}
             </span>
-            {curMovie.Year ? (
-              <>
-                <span className="text-zinc-300 dark:text-zinc-700">/</span>
-                <span>{curMovie.Year}</span>
-              </>
-            ) : null}
+
+            {hasRating && (
+              <span
+                aria-label={`IMDb rating ${curMovie.imdbRating}`}
+                className="inline-flex items-center gap-1 font-semibold text-[#b87d24] dark:text-[#deb052] shrink-0"
+              >
+                <Star size={13} weight="fill" aria-hidden="true" />
+                <span>{curMovie.imdbRating}</span>
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Bottom-Pinned Tone-Stepped Dossier Bar */}
+        <div className="mt-4 pt-3 flex items-center justify-between text-xs">
+          <span className="tabular-nums text-xs text-[#6b655e] dark:text-[#8a847c] truncate">
+            {curMovie.Genre ? curMovie.Genre.split(',')[0] : curMovie.imdbID}
           </span>
-
-          {hasRating && (
-            <span
-              aria-label={`IMDb rating ${curMovie.imdbRating}`}
-              className="inline-flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-400 shrink-0"
-            >
-              <Star className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
-              <span>{curMovie.imdbRating}</span>
-            </span>
-          )}
+          <Link
+            to={detailsPath}
+            onClick={handleLinkClick}
+            tabIndex={-1}
+            aria-hidden="true"
+            className="inline-flex items-center gap-1 font-semibold text-[#161514] dark:text-[#f2efe9] group-hover:text-[#c83a2b] dark:group-hover:text-[#d94636] transition-colors whitespace-nowrap shrink-0"
+          >
+            <span>Inspect dossier</span>
+            <ArrowUpRight
+              size={13}
+              weight="bold"
+              className="transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </Link>
         </div>
       </div>
     </article>

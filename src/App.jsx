@@ -5,12 +5,12 @@ import {
   Route,
   RouterProvider,
 } from 'react-router-dom';
-import { CircularProgress } from '@mui/material';
 import AppLayout from './components/layout/AppLayout.jsx';
 import NotFound from './pages/NotFound.jsx';
+import { ResultGridSkeleton } from './components/ui/Skeleton.jsx';
 import { getMoviesDetails } from './api/getMovieDetails.js';
 
-// Route-level code splitting with React.lazy (CS-16)
+// Route-level code splitting with React.lazy
 const Home = lazy(() => import('./pages/Home.jsx'));
 const Movie = lazy(() => import('./pages/Movie.jsx'));
 const MovieDetails = lazy(() => import('./pages/MovieDetails.jsx'));
@@ -22,9 +22,9 @@ const RouteSuspenseFallback = () => (
   <div
     role="status"
     aria-label="Loading view"
-    className="flex w-full min-h-[60vh] justify-center items-center"
+    className="w-full py-12"
   >
-    <CircularProgress size="3.25rem" sx={{ color: '#ef4444' }} />
+    <ResultGridSkeleton count={4} />
   </div>
 );
 

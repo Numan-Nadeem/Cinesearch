@@ -5,7 +5,6 @@ import ResultGrid from '../components/features/ResultGrid.jsx';
 import { ResultGridSkeleton } from '../components/ui/Skeleton.jsx';
 import ErrorState from '../components/ui/ErrorState.jsx';
 import EmptyState from '../components/ui/EmptyState.jsx';
-import SectionKicker from '../components/ui/SectionKicker.jsx';
 import { useMovieSearch } from '../hooks/useMovieSearch.js';
 import { useDocumentMeta } from '../lib/seo.js';
 
@@ -19,13 +18,13 @@ const QUICK_SEARCH_PRESETS = [
 ];
 
 /**
- * URL-synced search page powered by TanStack Query useInfiniteQuery (F1, F4, F5, CS-04, CS-05, CS-06, CS-23).
+ * URL-synced search page powered by TanStack Query useInfiniteQuery.
  */
 const Movie = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Derive search state strictly from URL query parameters (F1)
+  // Derive search state strictly from URL query parameters
   const query = (searchParams.get('query') || '').trim();
   const year = (searchParams.get('year') || '').trim();
   const type = searchParams.get('type') || 'All';
@@ -54,7 +53,7 @@ const Movie = () => {
     type,
   });
 
-  // Flatten paginated results and de-duplicate by imdbID (CS-06)
+  // Flatten paginated results and de-duplicate by imdbID
   const { items, totalResults } = useMemo(() => {
     if (!data?.pages || data.pages.length === 0) {
       return { items: [], totalResults: 0 };
@@ -107,7 +106,7 @@ const Movie = () => {
         {isLoading ? (
           <ResultGridSkeleton count={8} />
         ) : isError ? (
-          <div className="px-6">
+          <div className="px-5 sm:px-8 max-w-[1360px] mx-auto">
             <ErrorState error={error} onRetry={() => refetch()} />
           </div>
         ) : hasSearched ? (
@@ -122,29 +121,36 @@ const Movie = () => {
               queryLabel={query}
             />
           ) : (
-            <EmptyState
-              variant="no-results"
-              title="No titles matched your filter criteria"
-              description={`We couldn't find any entries matching "${query}"${
-                year ? ` released in ${year}` : ''
-              }${type !== 'All' ? ` (${type})` : ''}. Try broadening your release year or content type filters.`}
-              actionLabel="Reset Search Filters"
-              onAction={() => setSearchParams(new URLSearchParams())}
-            />
+            <div className="max-w-[1360px] mx-auto px-5 sm:px-8 py-12">
+              <EmptyState
+                variant="no-results"
+                title="No matching titles"
+                description={`We couldn't find any entries matching "${query}"${
+                  year ? ` released in ${year}` : ''
+                }${type !== 'All' ? ` (${type})` : ''}. Try broadening your release year or content type filters.`}
+                actionLabel="Reset Search Filters"
+                onAction={() => setSearchParams(new URLSearchParams())}
+              />
+            </div>
           )
         ) : (
-          <div className="max-w-3xl mx-auto px-6 py-10 animate-editorial-in">
-            <EmptyState
-              variant="prompt"
-              title="Search the Cinema Index"
-              description="Enter a film title, director, or series above—or press / on your keyboard—to query the catalogue immediately."
-            />
-
-            <div className="mt-2 flex flex-col items-center">
-              <SectionKicker index="02" className="mb-3">
-                Curated Starting Points
-              </SectionKicker>
-              <div className="flex flex-wrap justify-center gap-2">
+          <section
+            aria-labelledby="starting-queries-heading"
+            className="max-w-[1360px] mx-auto px-5 sm:px-8 py-16 animate-editorial-in"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start bg-[#ebe6dc] dark:bg-[#151519] p-6 sm:p-10">
+              <div className="lg:col-span-5">
+                <h2
+                  id="starting-queries-heading"
+                  className="font-display text-2xl sm:text-3xl font-bold text-[#161514] dark:text-white mb-3"
+                >
+                  Curated starting points.
+                </h2>
+                <p className="text-base text-[#494540] dark:text-[#b5b0a8] leading-relaxed">
+                  Select a repertory preset to load immediate results, or type any title or director in the search bar above.
+                </p>
+              </div>
+              <div className="lg:col-span-7 flex flex-wrap gap-3 lg:justify-end items-center">
                 {QUICK_SEARCH_PRESETS.map((preset) => (
                   <button
                     key={preset.label}
@@ -156,14 +162,14 @@ const Movie = () => {
                         type: preset.type || 'All',
                       })
                     }
-                    className="rounded-lg border border-zinc-300/80 dark:border-white/10 bg-white dark:bg-[#141418] px-3.5 py-2 text-xs font-medium text-zinc-800 dark:text-zinc-200 hover:border-[#d93829] hover:text-[#d93829] dark:hover:text-[#e84a3b] active:scale-[0.98] cursor-pointer transition-all shadow-2xs"
+                    className="bg-[#e2dcd0] dark:bg-[#1d1d23] hover:bg-[#c83a2b] hover:text-white px-5 py-3 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] active:scale-[0.98] cursor-pointer transition-all whitespace-nowrap"
                   >
                     {preset.label}
                   </button>
                 ))}
               </div>
             </div>
-          </div>
+          </section>
         )}
       </div>
     </div>

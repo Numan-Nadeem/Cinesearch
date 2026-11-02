@@ -14,6 +14,10 @@ import {
   getFallbackMovieDetails,
   getFallbackTrending,
 } from './mockMovies.js';
+import {
+  computeWeightedConsensus,
+  ARCHIVAL_CONSENSUS_PRINTS,
+} from '../lib/consensus.js';
 
 test('validateReleaseYear accepts empty or valid 4-digit years between 1880 and currentYear', () => {
   assert.deepEqual(validateReleaseYear('', 2026), { valid: true, error: '' });
@@ -114,4 +118,18 @@ test('searchFallbackMovies and getFallbackMovieDetails handle filters, missing p
 
   const trendingSciFi = getFallbackTrending('Sci-Fi');
   assert.ok(trendingSciFi.length > 0);
+});
+
+test('computeWeightedConsensus calculates audience, critic mean, and weighted consensus accurately', () => {
+  const darkKnight = ARCHIVAL_CONSENSUS_PRINTS[0]; // audience 90, RT 94, MC 84 -> criticMean 89
+  const atAudience = computeWeightedConsensus(darkKnight, 0);
+  assert.equal(atAudience.weightedScore, 90);
+  assert.equal(atAudience.criticMean, 89);
+  assert.equal(atAudience.verdict, 'Locked Consensus');
+
+  const parasite = ARCHIVAL_CONSENSUS_PRINTS[2]; // audience 85, RT 99, MC 97 -> criticMean 98
+  const atCritics = computeWeightedConsensus(parasite, 100);
+  assert.equal(atCritics.weightedScore, 98);
+  assert.equal(atCritics.spread, 13);
+  assert.equal(atCritics.verdict, 'Critics +13 pts');
 });

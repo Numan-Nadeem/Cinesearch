@@ -7,22 +7,22 @@ export function getMuiTheme(mode = 'dark') {
     palette: {
       mode: isDark ? 'dark' : 'light',
       primary: {
-        main: '#d93829',
+        main: '#c83a2b',
       },
       background: {
-        default: isDark ? '#09090b' : '#f8f7f4',
-        paper: isDark ? '#121216' : '#ffffff',
+        default: isDark ? '#0c0c0e' : '#f7f4ee',
+        paper: isDark ? '#131317' : '#fcfbf8',
       },
       text: {
-        primary: isDark ? '#f4f4f6' : '#141417',
-        secondary: isDark ? '#a1a1aa' : '#52525b',
+        primary: isDark ? '#f2efe9' : '#181615',
+        secondary: isDark ? '#a8a29e' : '#57534e',
       },
     },
     typography: {
-      fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, sans-serif",
+      fontFamily: "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif",
     },
     shape: {
-      borderRadius: 12,
+      borderRadius: 10,
     },
   });
 }

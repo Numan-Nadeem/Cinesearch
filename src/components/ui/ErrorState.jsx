@@ -1,72 +1,53 @@
-import { AlertTriangle, WifiOff, Clock, Film, RefreshCw, Bookmark } from 'lucide-react';
+import {
+  ArrowCounterClockwise,
+  BookmarkSimple,
+} from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
 
 /**
- * Honest, typed error state presentation distinguishing quota exhaustion,
- * network drops, not-found titles, and upstream failures (F4, CS-01, CS-04).
+ * Direct, active-voice error state presentation distinguishing quota exhaustion,
+ * network drops, not-found titles, and upstream failures.
  */
 const ErrorState = ({ error, onRetry, titleOverride }) => {
   const kind = error?.kind || 'upstream';
   const message =
-    error?.message || 'An unexpected error occurred while communicating with the catalogue.';
+    error?.message || 'Connection to the catalogue service failed. Please try again.';
 
   const config = {
     quota: {
-      icon: Clock,
-      badge: 'Daily Quota Limit · HTTP 429',
-      heading: titleOverride || 'Daily API Quota Reached',
+      heading: titleOverride || 'Daily API quota reached',
       description:
-        'The free OMDb API tier allows 1,000 requests per day. Repeat searches within your session and your saved Watchlist continue to work offline without using quota.',
-      accent: 'text-amber-600 dark:text-amber-400',
+        'The free OMDb API tier allows 1,000 requests per day (HTTP 429). Repeat searches within your session and your saved Watchlist continue to work offline without using quota.',
     },
     network: {
-      icon: WifiOff,
-      badge: 'Connection Interrupted',
-      heading: titleOverride || 'Unable to Reach Catalogue',
+      heading: titleOverride || 'Catalogue unreachable',
       description: message,
-      accent: 'text-[#d93829] dark:text-[#e84a3b]',
     },
     'not-found': {
-      icon: Film,
-      badge: 'Not Found · HTTP 404',
-      heading: titleOverride || 'Title Not Found',
+      heading: titleOverride || 'Title not in index',
       description:
-        'We could not find a movie or series matching that identifier. It may have been mistyped or removed from the index.',
-      accent: 'text-zinc-600 dark:text-zinc-400',
+        'We could not find a movie or series matching that identifier (HTTP 404). Verify the IMDb ID or return to the catalogue search.',
     },
     upstream: {
-      icon: AlertTriangle,
-      badge: 'Service Error',
-      heading: titleOverride || 'Catalogue Temporarily Unavailable',
+      heading: titleOverride || 'Catalogue unavailable',
       description: message,
-      accent: 'text-[#d93829] dark:text-[#e84a3b]',
     },
   }[kind] || {
-    icon: AlertTriangle,
-    badge: 'Error',
-    heading: titleOverride || 'Something Went Wrong',
+    heading: titleOverride || 'Unable to load record',
     description: message,
-    accent: 'text-[#d93829] dark:text-[#e84a3b]',
   };
-
-  const IconComponent = config.icon;
 
   return (
     <div
       role="alert"
       data-testid={`error-state-${kind}`}
-      className="my-12 mx-auto max-w-xl rounded-2xl border border-zinc-200/90 dark:border-white/10 bg-white dark:bg-[#141418] p-8 text-center shadow-xl animate-editorial-in"
+      className="my-12 mx-auto max-w-xl bg-[#ebe6dc] dark:bg-[#151519] p-8 text-center animate-editorial-in"
     >
-      <div className={`mx-auto mb-3 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] font-semibold ${config.accent}`}>
-        <IconComponent className="w-4 h-4" aria-hidden="true" />
-        <span>{config.badge}</span>
-      </div>
-
-      <h2 className="font-display text-2xl font-bold text-zinc-900 dark:text-white mb-2.5">
+      <h2 className="font-display text-2xl font-bold text-[#161514] dark:text-white mb-3">
         {config.heading}
       </h2>
 
-      <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed mb-7 max-w-[54ch] mx-auto">
+      <p className="text-base text-[#494540] dark:text-[#b5b0a8] leading-relaxed mb-7 max-w-[50ch] mx-auto">
         {config.description}
       </p>
 
@@ -75,24 +56,24 @@ const ErrorState = ({ error, onRetry, titleOverride }) => {
           <button
             type="button"
             onClick={onRetry}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#d93829] hover:bg-[#b82d20] active:scale-[0.98] px-5 py-2.5 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-[#d93829] cursor-pointer transition-all"
+            className="inline-flex items-center gap-2 bg-[#c83a2b] hover:bg-[#a92e21] active:scale-[0.98] px-5 py-2.5 text-xs font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c83a2b] cursor-pointer transition-all"
           >
-            <RefreshCw className="w-4 h-4" aria-hidden="true" />
-            Try Again
+            <ArrowCounterClockwise size={15} weight="bold" aria-hidden="true" />
+            <span>Try Again</span>
           </button>
         )}
 
         <Link
           to="/watchlist"
-          className="inline-flex items-center gap-2 rounded-xl border border-zinc-300/80 dark:border-white/15 bg-zinc-100 dark:bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100 hover:border-zinc-400 dark:hover:border-white/25 active:scale-[0.98] transition-all"
+          className="inline-flex items-center gap-2 bg-[#e2dcd0] dark:bg-[#1d1d23] px-5 py-2.5 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] hover:bg-[#d5cec0] dark:hover:bg-[#26262e] active:scale-[0.98] transition-all"
         >
-          <Bookmark className="w-4 h-4" aria-hidden="true" />
-          Open Watchlist
+          <BookmarkSimple size={15} weight="duotone" aria-hidden="true" />
+          <span>Open Watchlist</span>
         </Link>
 
         <Link
           to="/movies"
-          className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] hover:text-[#161514] dark:hover:text-white transition-colors"
         >
           Browse Catalogue
         </Link>

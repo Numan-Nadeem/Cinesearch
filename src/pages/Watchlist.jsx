@@ -1,21 +1,58 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Download, Upload, Trash2, ArrowUpDown } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import {
+  DownloadSimple,
+  UploadSimple,
+  Trash,
+  ArrowsDownUp,
+  Plus,
+  ArrowLeft,
+} from '@phosphor-icons/react';
 import { useWatchlist } from '../context/WatchlistContext.jsx';
 import MovieCard from '../components/ui/MovieCard.jsx';
 import EmptyState from '../components/ui/EmptyState.jsx';
-import SectionKicker from '../components/ui/SectionKicker.jsx';
 import { useDocumentMeta } from '../lib/seo.js';
 
+const REPERTORY_STARTERS = [
+  {
+    imdbID: 'tt0468569',
+    Title: 'The Dark Knight',
+    Year: '2008',
+    Type: 'movie',
+    Genre: 'Action, Crime, Drama',
+    imdbRating: '9.0',
+    Poster: 'https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg',
+  },
+  {
+    imdbID: 'tt6751668',
+    Title: 'Parasite',
+    Year: '2019',
+    Type: 'movie',
+    Genre: 'Drama, Thriller',
+    imdbRating: '8.5',
+    Poster: 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg',
+  },
+  {
+    imdbID: 'tt0078748',
+    Title: 'Alien',
+    Year: '1979',
+    Type: 'movie',
+    Genre: 'Horror, Sci-Fi',
+    imdbRating: '8.5',
+    Poster: 'https://image.tmdb.org/t/p/w500/vfrQk5IPloGg1v9Rzbh2Eg3VGyM.jpg',
+  },
+];
+
 /**
- * Local-first Watchlist page with zero API dependency, multi-key sorting,
- * JSON export/import, Escape-key modal dismissal, and undoable removals (F2, F7).
+ * Local-first Watchlist Vault page with zero API dependency, collection analytics strip,
+ * multi-key sorting, JSON export/import, Escape-key modal dismissal, and undoable removals.
  */
 const Watchlist = () => {
   const navigate = useNavigate();
   const {
     items,
     count,
+    addToWatchlist,
     removeFromWatchlist,
     exportWatchlistJson,
     importWatchlistJson,
@@ -85,13 +122,31 @@ const Watchlist = () => {
     reader.readAsText(file);
   };
 
-  const filteredItems = useMemo(() => {
+  const { filteredItems, avgRating, movieCount, seriesCount } = useMemo(() => {
+    let ratedSum = 0;
+    let ratedTotal = 0;
+    let mCount = 0;
+    let sCount = 0;
+
+    for (const item of items) {
+      const r = parseFloat(item.imdbRating);
+      if (!Number.isNaN(r) && r > 0) {
+        ratedSum += r;
+        ratedTotal += 1;
+      }
+      if ((item.Type || 'movie').toLowerCase() === 'series') {
+        sCount += 1;
+      } else {
+        mCount += 1;
+      }
+    }
+
     const base = items.filter((item) => {
       if (typeFilter === 'All') return true;
       return (item.Type || 'movie').toLowerCase() === typeFilter.toLowerCase();
     });
 
-    return [...base].sort((a, b) => {
+    const sorted = [...base].sort((a, b) => {
       if (sortBy === 'title') {
         return (a.Title || '').localeCompare(b.Title || '');
       }
@@ -105,23 +160,37 @@ const Watchlist = () => {
         const rateB = parseFloat(b.imdbRating) || 0;
         return rateB - rateA;
       }
-      return 0; // 'recent' preserves insertion order
+      return 0;
     });
+
+    return {
+      filteredItems: sorted,
+      avgRating: ratedTotal > 0 ? (ratedSum / ratedTotal).toFixed(1) : '—',
+      movieCount: mCount,
+      seriesCount: sCount,
+    };
   }, [items, typeFilter, sortBy]);
 
   return (
-    <div className="max-w-7xl w-full mx-auto px-6 md:px-10 py-12 animate-editorial-in">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-zinc-200/90 dark:border-white/[0.08]">
+    <div className="max-w-[1360px] w-full mx-auto px-5 sm:px-8 pt-10 pb-20 animate-editorial-in">
+      <div className="mb-6">
+        <Link
+          to="/movies"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] hover:text-[#c83a2b] dark:hover:text-[#d94636] transition-colors"
+        >
+          <ArrowLeft size={14} weight="bold" aria-hidden="true" />
+          <span>Return to Catalogue Search</span>
+        </Link>
+      </div>
+
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8">
         <div>
-          <SectionKicker index="01" className="mb-1.5">
-            Personal Collection · Offline Ready
-          </SectionKicker>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-zinc-900 dark:text-white tracking-tight">
-            My Watchlist{' '}
-            <span className="font-mono tabular-nums text-base font-medium text-zinc-500 dark:text-zinc-400">
-              · {count} {count === 1 ? 'title' : 'titles'}
-            </span>
+          <h1 className="font-display text-3xl sm:text-5xl font-bold text-[#161514] dark:text-white tracking-[-0.03em] leading-[1.03] mb-2">
+            Personal Watchlist
           </h1>
+          <p className="tabular-nums text-base text-[#494540] dark:text-[#b5b0a8]">
+            {count} {count === 1 ? 'saved title' : 'saved titles'} · Stored locally in your browser for offline access.
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
@@ -129,9 +198,9 @@ const Watchlist = () => {
             type="button"
             onClick={handleExportDownload}
             disabled={count === 0}
-            className="inline-flex items-center gap-2 rounded-lg border border-zinc-300/80 dark:border-white/10 bg-white dark:bg-[#141418] px-4 py-2 text-xs font-medium text-zinc-800 dark:text-zinc-200 hover:border-zinc-400 dark:hover:border-white/25 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+            className="inline-flex items-center gap-2 bg-[#ebe6dc] dark:bg-[#151519] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23] px-4 py-2.5 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all whitespace-nowrap"
           >
-            <Download className="w-3.5 h-3.5" aria-hidden="true" />
+            <DownloadSimple size={15} weight="duotone" aria-hidden="true" />
             <span>Export JSON</span>
           </button>
 
@@ -141,9 +210,9 @@ const Watchlist = () => {
               setImportError('');
               setShowImportModal(true);
             }}
-            className="inline-flex items-center gap-2 rounded-lg border border-zinc-300/80 dark:border-white/10 bg-white dark:bg-[#141418] px-4 py-2 text-xs font-medium text-zinc-800 dark:text-zinc-200 hover:border-zinc-400 dark:hover:border-white/25 active:scale-[0.98] cursor-pointer transition-all"
+            className="inline-flex items-center gap-2 bg-[#ebe6dc] dark:bg-[#151519] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23] px-4 py-2.5 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] active:scale-[0.98] cursor-pointer transition-all whitespace-nowrap"
           >
-            <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+            <UploadSimple size={15} weight="duotone" aria-hidden="true" />
             <span>Import JSON</span>
           </button>
         </div>
@@ -151,7 +220,46 @@ const Watchlist = () => {
 
       {count > 0 ? (
         <>
-          <div className="flex flex-wrap items-center justify-between gap-4 my-7">
+          {/* Collection Summary Metrics Strip */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <div className="bg-[#ebe6dc] dark:bg-[#151519] p-4">
+              <span className="block text-xs text-[#494540] dark:text-[#b5b0a8]">
+                Total Saved
+              </span>
+              <span className="tabular-nums text-lg font-bold text-[#161514] dark:text-white">
+                {count} {count === 1 ? 'Print' : 'Prints'}
+              </span>
+            </div>
+            <div className="bg-[#ebe6dc] dark:bg-[#151519] p-4">
+              <span className="block text-xs text-[#494540] dark:text-[#b5b0a8]">
+                Format Split
+              </span>
+              <span className="tabular-nums text-lg font-bold text-[#161514] dark:text-white">
+                {movieCount} Movies · {seriesCount} Series
+              </span>
+            </div>
+            <div className="bg-[#ebe6dc] dark:bg-[#151519] p-4">
+              <span className="block text-xs text-[#494540] dark:text-[#b5b0a8]">
+                Mean IMDb Score
+              </span>
+              <span className="tabular-nums text-lg font-bold text-[#b87d24] dark:text-[#deb052]">
+                {avgRating} / 10
+              </span>
+            </div>
+            <div className="bg-[#ebe6dc] dark:bg-[#151519] p-4">
+              <span className="block text-xs text-[#494540] dark:text-[#b5b0a8]">
+                Persistence
+              </span>
+              <span className="text-base font-bold text-[#161514] dark:text-white">
+                Local Browser Vault
+              </span>
+            </div>
+          </div>
+
+          <div
+            data-ui="watchlist-controls"
+            className="flex flex-wrap items-center justify-between gap-4 my-7 bg-[#ebe6dc] dark:bg-[#151519] p-4"
+          >
             <div
               role="group"
               aria-label="Filter watchlist by type"
@@ -165,10 +273,10 @@ const Watchlist = () => {
                     type="button"
                     onClick={() => setTypeFilter(type)}
                     aria-pressed={active}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-[0.98] cursor-pointer ${
+                    className={`px-4 py-2 text-xs font-semibold transition-all active:scale-[0.98] cursor-pointer whitespace-nowrap ${
                       active
-                        ? 'bg-[#d93829] text-white font-semibold'
-                        : 'bg-white dark:bg-[#141418] text-zinc-700 dark:text-zinc-300 border border-zinc-200/90 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-white/20'
+                        ? 'bg-[#c83a2b] text-white'
+                        : 'bg-[#e2dcd0] dark:bg-[#1d1d23] text-[#161514] dark:text-[#f2efe9] hover:bg-[#d5cec0] dark:hover:bg-[#26262e]'
                     }`}
                   >
                     {type === 'All' ? 'All Saved' : type === 'series' ? 'Series' : 'Movies'}
@@ -178,15 +286,15 @@ const Watchlist = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <ArrowUpDown className="w-3.5 h-3.5 text-zinc-400" aria-hidden="true" />
-              <label htmlFor="watchlist-sort" className="text-xs text-zinc-500 dark:text-zinc-400">
+              <ArrowsDownUp size={15} className="text-[#6b655e]" aria-hidden="true" />
+              <label htmlFor="watchlist-sort" className="text-xs font-semibold text-[#494540] dark:text-[#b5b0a8]">
                 Sort by
               </label>
               <select
                 id="watchlist-sort"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="rounded-lg border border-zinc-300/80 dark:border-white/10 bg-white dark:bg-[#141418] px-3 py-1.5 text-xs font-medium text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#d93829]"
+                className="bg-[#f5f2eb] dark:bg-[#0c0c0e] px-3 py-2 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] focus:outline-none focus:ring-2 focus:ring-[#c83a2b]"
               >
                 <option value="recent">Recently Added</option>
                 <option value="rating">IMDb Rating</option>
@@ -210,9 +318,9 @@ const Watchlist = () => {
                   type="button"
                   onClick={() => removeFromWatchlist(movie.imdbID)}
                   aria-label={`Remove ${movie.Title} from watchlist`}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-zinc-200/90 dark:border-white/[0.08] bg-white dark:bg-[#141418] py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-[#d93829] hover:border-[#d93829]/40 active:scale-[0.98] cursor-pointer transition-all"
+                  className="inline-flex items-center justify-center gap-1.5 bg-[#ebe6dc] dark:bg-[#151519] hover:bg-[#c83a2b] hover:text-white py-2 text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] active:scale-[0.98] cursor-pointer transition-all"
                 >
-                  <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                  <Trash size={14} aria-hidden="true" />
                   <span>Remove</span>
                 </button>
               </div>
@@ -220,13 +328,41 @@ const Watchlist = () => {
           </div>
         </>
       ) : (
-        <EmptyState
-          variant="watchlist"
-          title="Your Watchlist is Empty"
-          description="Bookmark any film or series while browsing the catalogue. Saved titles persist locally in your browser for instant offline access."
-          actionLabel="Explore the Catalogue"
-          actionTo="/movies"
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch py-6">
+          <div className="lg:col-span-6">
+            <EmptyState
+              variant="watchlist"
+              title="Watchlist is empty"
+              description="Bookmark any film or series while browsing the catalogue. Saved titles persist locally in your browser for instant offline access."
+              actionLabel="Explore the Catalogue"
+              actionTo="/movies"
+            />
+          </div>
+
+          <div className="lg:col-span-6 bg-[#ebe6dc] dark:bg-[#151519] p-8 flex flex-col justify-center">
+            <h2 className="font-display text-2xl font-bold text-[#161514] dark:text-white mb-3">
+              Archival starters
+            </h2>
+            <p className="text-base text-[#494540] dark:text-[#b5b0a8] leading-relaxed mb-6">
+              Populate your local screening room in one click with three landmark repertory prints.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {REPERTORY_STARTERS.map((starter) => (
+                <button
+                  key={starter.imdbID}
+                  type="button"
+                  onClick={() => addToWatchlist(starter)}
+                  className="inline-flex items-center gap-2 bg-[#e2dcd0] dark:bg-[#1d1d23] hover:bg-[#c83a2b] hover:text-white px-4 py-2.5 text-xs font-semibold text-[#161514] dark:text-[#f2efe9] active:scale-[0.98] cursor-pointer transition-all"
+                >
+                  <Plus size={13} weight="bold" aria-hidden="true" />
+                  <span className="tabular-nums">
+                    {starter.Title} ({starter.Year})
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Import Watchlist JSON Modal */}
@@ -235,27 +371,27 @@ const Watchlist = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="import-watchlist-heading"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
           onClick={() => setShowImportModal(false)}
         >
           <div
-            className="w-full max-w-lg rounded-2xl bg-[#f8f7f4] dark:bg-[#141418] p-6 shadow-2xl border border-zinc-200 dark:border-white/10"
+            className="w-full max-w-lg bg-[#f5f2eb] dark:bg-[#151519] p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h2
               id="import-watchlist-heading"
-              className="font-display text-lg font-bold text-zinc-900 dark:text-white mb-2"
+              className="font-display text-xl font-bold text-[#161514] dark:text-white mb-2"
             >
               Import Watchlist JSON
             </h2>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400 mb-4">
+            <p className="text-xs text-[#494540] dark:text-[#b5b0a8] mb-4">
               Upload a previously exported <code>cinesearch-watchlist.json</code> file or paste the JSON array below.
             </p>
 
             <div className="mb-4">
               <label
                 htmlFor="watchlist-file-input"
-                className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5"
+                className="block text-xs font-semibold text-[#161514] dark:text-[#f2efe9] mb-1.5"
               >
                 Choose JSON File
               </label>
@@ -264,14 +400,14 @@ const Watchlist = () => {
                 type="file"
                 accept="application/json,.json"
                 onChange={handleFileUpload}
-                className="block w-full text-xs text-zinc-600 dark:text-zinc-300 file:mr-3 file:rounded-lg file:border-0 file:bg-[#d93829] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-[#b82d20] cursor-pointer"
+                className="block w-full text-xs text-[#494540] dark:text-[#b5b0a8] file:mr-3 file:border-0 file:bg-[#c83a2b] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-[#a92e21] cursor-pointer"
               />
             </div>
 
             <form onSubmit={handleImportSubmit}>
               <label
                 htmlFor="watchlist-json-textarea"
-                className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5"
+                className="block text-xs font-semibold text-[#161514] dark:text-[#f2efe9] mb-1.5"
               >
                 Or Paste JSON Content
               </label>
@@ -281,11 +417,11 @@ const Watchlist = () => {
                 value={importText}
                 onChange={(e) => setImportText(e.target.value)}
                 placeholder='[{"imdbID":"tt0468569","Title":"The Dark Knight","Year":"2008","Type":"movie"}]'
-                className="w-full rounded-xl border border-zinc-300 dark:border-white/15 bg-white dark:bg-[#0c0c0e] p-3 text-xs font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-[#d93829]"
+                className="w-full bg-[#ebe6dc] dark:bg-[#0c0c0e] p-3 text-xs text-[#161514] dark:text-[#f2efe9] focus:outline-none focus:ring-2 focus:ring-[#c83a2b]"
               />
 
               {importError && (
-                <p role="alert" className="mt-2 text-xs font-medium text-[#d93829]">
+                <p role="alert" className="mt-2 text-xs font-semibold text-[#c83a2b]">
                   {importError}
                 </p>
               )}
@@ -294,14 +430,14 @@ const Watchlist = () => {
                 <button
                   type="button"
                   onClick={() => setShowImportModal(false)}
-                  className="rounded-lg px-4 py-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-[#494540] dark:text-[#b5b0a8] hover:bg-[#e2dcd0] dark:hover:bg-[#1d1d23] cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!importText.trim()}
-                  className="rounded-lg bg-[#d93829] px-5 py-2 text-xs font-semibold text-white hover:bg-[#b82d20] active:scale-[0.98] disabled:opacity-40 cursor-pointer transition-all"
+                  className="bg-[#c83a2b] px-5 py-2 text-xs font-semibold text-white hover:bg-[#a92e21] active:scale-[0.98] disabled:opacity-40 cursor-pointer transition-all"
                 >
                   Import Titles
                 </button>
