@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Film } from 'lucide-react';
 import { cleanField } from '../../api/normalize.js';
 
@@ -16,6 +16,11 @@ const PosterArtwork = ({
   const validSrc = cleanField(src);
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+    setLoaded(false);
+  }, [validSrc]);
 
   if (!validSrc || failed) {
     return (

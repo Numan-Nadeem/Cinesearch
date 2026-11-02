@@ -43,8 +43,8 @@ const ACCORDION_PANELS = [
     subtitle: 'Dune, Blade Runner, Alien, Interstellar',
     description:
       'Explore visionary world-building, off-world colonies, and high-concept speculative cinema across seven decades.',
-    query: 'Blade Runner',
-    image: 'https://picsum.photos/seed/cyberpunk-cinema/1920/1080',
+    query: 'Dune',
+    image: 'https://image.tmdb.org/t/p/w1280/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg',
   },
   {
     id: 'noir',
@@ -53,7 +53,7 @@ const ACCORDION_PANELS = [
     description:
       'Shadow-drenched urban mysteries, psychological cat-and-mouse thrillers, and meticulous procedural dramas.',
     query: 'Batman',
-    image: 'https://picsum.photos/seed/noir-thriller/1920/1080',
+    image: 'https://image.tmdb.org/t/p/w1280/74xTEgt7R36Fpooo50r9T25onhq.jpg',
   },
   {
     id: 'auteur',
@@ -62,7 +62,7 @@ const ACCORDION_PANELS = [
     description:
       'Award-winning feature films with side-by-side IMDb, Rotten Tomatoes, and Metacritic critical scores.',
     query: 'Oppenheimer',
-    image: 'https://picsum.photos/seed/auteur-film/1920/1080',
+    image: 'https://image.tmdb.org/t/p/w1280/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg',
   },
   {
     id: 'series',
@@ -71,7 +71,7 @@ const ACCORDION_PANELS = [
     description:
       'Multi-season television landmarks indexed with full season counts, cast credits, and instant watchlist persistence.',
     query: 'Breaking Bad',
-    image: 'https://picsum.photos/seed/prestige-series/1920/1080',
+    image: 'https://image.tmdb.org/t/p/w1280/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg',
   },
 ];
 
@@ -237,7 +237,7 @@ const Home = () => {
               className="inline-block w-20 sm:w-28 md:w-36 h-10 sm:h-12 md:h-14 rounded-full align-middle bg-cover bg-center mx-1.5 border border-white/25 grayscale contrast-125 shadow-xl"
               style={{
                 backgroundImage:
-                  'url("https://picsum.photos/seed/cinema-lens/600/300")',
+                  'url("https://image.tmdb.org/t/p/w780/qJ2tW6WMUDux911r6m7haRef0WH.jpg")',
               }}
             />{' '}
             indexed with critical{' '}
@@ -246,7 +246,7 @@ const Home = () => {
               className="inline-block w-20 sm:w-28 md:w-36 h-10 sm:h-12 md:h-14 rounded-full align-middle bg-cover bg-center mx-1.5 border border-white/25 grayscale contrast-125 shadow-xl"
               style={{
                 backgroundImage:
-                  'url("https://picsum.photos/seed/film-archive/600/300")',
+                  'url("https://image.tmdb.org/t/p/w780/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg")',
               }}
             />{' '}
             clarity.
@@ -316,7 +316,7 @@ const Home = () => {
           {/* Card 1: col-span-2 row-span-2 (4 cells) */}
           <article className="group relative lg:col-span-2 lg:row-span-2 rounded-3xl overflow-hidden bg-[#121216] border border-zinc-200/80 dark:border-white/10 p-8 sm:p-10 flex flex-col justify-between min-h-[360px] text-white">
             <img
-              src="https://picsum.photos/seed/cinema-projector-room/1920/1080"
+              src="https://image.tmdb.org/t/p/w1280/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
               alt=""
               aria-hidden="true"
               loading="lazy"
@@ -354,7 +354,7 @@ const Home = () => {
           {/* Card 2: col-span-2 row-span-1 (2 cells) */}
           <article className="group relative lg:col-span-2 lg:row-span-1 rounded-3xl overflow-hidden bg-white dark:bg-[#121216] border border-zinc-200/80 dark:border-white/10 p-7 sm:p-8 flex flex-col justify-between">
             <img
-              src="https://picsum.photos/seed/film-negatives/1200/600"
+              src="https://image.tmdb.org/t/p/w1280/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg"
               alt=""
               aria-hidden="true"
               loading="lazy"
